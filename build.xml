@@ -1,0 +1,37 @@
+<?xml version="1.0" ?> 
+<project name="AntExample1" default="war">
+	<path id="compile.classpath">
+			<fileset dir="lib">
+				<include name="*.jar"/>
+			</fileset>
+		</path>
+	<target name="init">
+		<mkdir dir="build/classes"/>
+		<mkdir dir="dist" />
+	</target>
+	
+	<target name="compile" depends="init">
+			<javac destdir="build/classes" debug="true" srcdir="src">
+				<classpath refid="compile.classpath"/>				
+		</javac>
+		
+	</target>
+
+	<target name="war" depends="compile">	
+		<copy todir="build/classes">
+		<fileset dir="src" includes="**/*.properties"/>
+		</copy>
+		<jar basedir="build/classes" destfile="C:\Focus tool\FOCUS-2.15.0.1\lib\importers-custom.jar">
+			<manifest>
+				<attribute name="Built-By" value="${builder}" />
+				<attribute name="Built-On" value="${build-info.current-date}" />
+				<attribute name="Built-At" value="${build-info.current-time}" />
+			</manifest>
+		</jar>
+	</target>		
+	<target name="clean">
+		<delete dir="dist" />
+		<delete dir="build" />
+	</target>
+	
+</project>
