@@ -142,19 +142,17 @@ public class JsonGeneratorFromSchema {
 		SchemaV4 schema =  new SchemaV4().wrap((JsonObject) JsonElement.readFrom( incomingJsonInputSchema
 			)); 
 		File f1 = new File(schemaFilePath);
-		System.out.println("schemaFilePath kalpana outside if condition-------->"+schemaFilePath);
+		
 		if(f1.exists()){
-			System.out.println("schemaFilePath kalpana please make it work -------->"+schemaFilePath);
+			System.out.println("schemaFilePath inside if -------->"+schemaFilePath);
 			URI url = new File(schemaFilePath).toURI();
 			schema.setOrigSrc(url);
 			//System.out.println("schemaFilePath"+schemaFilePath);
-		}/*else{
-			schemaFilePath =schemaFilePath.replace("\\jsd", "");	
-		}*/
+		}else{
+			schemaFilePath =schemaFilePath.replace("\\jsd", "");
+			System.out.println("schemaFilePath inside else-------->"+schemaFilePath);
+		}
 		
-		
-		
-		//System.out.println(schema1.getRequired());
 		return generateWithSettings(schema);
 		
 	}  

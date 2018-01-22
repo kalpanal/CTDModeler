@@ -213,6 +213,18 @@ public class ParasoftImporter implements CartesianProductImporter {
 				}
 
 			}
+			
+			
+			AttributeData messageId = new AttributeData("MessageID", AttributeData.Type.STRING,
+					AttributeData.IOType.INPUT);
+			ret.add(messageId);
+			
+			AttributeData traceabilityId = new AttributeData("TraceabilityId", AttributeData.Type.STRING,
+					AttributeData.IOType.INPUT);
+			ret.add(traceabilityId);
+			AttributeData responseCode = new AttributeData("responseCode", AttributeData.Type.STRING,
+					AttributeData.IOType.INPUT);
+			ret.add(responseCode);
 
 			System.out.println("configurationTOEndPointList should be one always------>"+configurationTOEndPointList.size());
 			if(configurationTOEndPointList.size() > 0) {
@@ -256,13 +268,7 @@ public class ParasoftImporter implements CartesianProductImporter {
 		}
 
 		
-		ArrayList<AttributeData> ret1 = new ArrayList<AttributeData>();
-		AttributeData a1 = new AttributeData("a1", AttributeData.Type.STRING,
-				AttributeData.IOType.NEITHER);
-		ret1.add(a1);
-		AttributeData a2 = new AttributeData("a2", AttributeData.Type.STRING,
-				AttributeData.IOType.NEITHER);
-		ret1.add(a2);
+		
 		//System.out.println("ret inside getaatributes method just beofre return statement----->"+ret.size()+"\n"+ret);
 		return ret;
 	}
@@ -300,6 +306,24 @@ public class ParasoftImporter implements CartesianProductImporter {
 
 		//System.out.println("ret values inside getValues()------>"+retValues.size());
 		List<SortedSet<String>> retValue = new ArrayList<SortedSet<String>>();
+		SortedSet<String> messageIdSet = new TreeSet<String>();
+		for(int k=1; k<=retValues.size();k++){
+			
+			messageIdSet.add("TC00"+k+"_messageId");			
+		}
+		retValue.add(messageIdSet);
+		
+		
+		SortedSet<String> traceabilityIdSet = new TreeSet<String>();
+		for(int k=1; k<=retValues.size();k++){
+			
+			traceabilityIdSet.add("TC00"+k+"_traceabilityId");			
+		}
+		
+		SortedSet<String> responseCodeSet = new TreeSet<String>();
+		responseCodeSet.add("200");
+		retValue.add(responseCodeSet);
+		
 		for(int r=0;r<retValues.size();r++){
 			SortedSet<String> vals1 = new TreeSet<String>();
 			vals1.add(retValues.get(r));
@@ -495,7 +519,8 @@ public class ParasoftImporter implements CartesianProductImporter {
 		/**load input parameters - START*/
 		if(urlEndPointsSubNode.methods().get(index).body().size() >0){					
 			configurationTO.setInputSampleString(JsonGeneratorFromSchema.generateInputSampleString(urlEndPointsSubNode
-					.methods().get(index).body().get(0).schemaContent(),Util.ramlFilePathWithOutFileName(ramlfilename.getAbsolutePath())+"..\\jsd\\"+urlEndPointsSubNode.methods().get(index).body().get(0).schema().value().toString() ).toString());
+					.methods().get(index).body().get(0).schemaContent(),Util.ramlFilePathWithOutFileName(ramlfilename.getAbsolutePath())+"\\jsd\\"
+							+urlEndPointsSubNode.methods().get(index).body().get(0).schema().value().toString()+".1.schema.json" ).toString());
 			/*System.out.println("output samples"+urlEndPointsSubNode
 					.methods().get(index).body().get(0).example().value().toString());*/
 			jsonString2Map(urlEndPointsSubNode
@@ -524,7 +549,7 @@ public class ParasoftImporter implements CartesianProductImporter {
 					//configurationTO.setResponseSchemaString(JsonGeneratorFromSchema.generateInputSampleString(response.body().get(k).schemaContent().toString()).toString());
 					responseLoaded = true;
 					responseSchemaMap.put(response.code().value(), JsonGeneratorFromSchema.generateInputSampleString(response.body().get(0).schemaContent().toString(), 
-							Util.ramlFilePathWithOutFileName(ramlfilename.getAbsolutePath())+"../jsd/"+response.body().get(0).schema().value().toString() ).toString());
+							Util.ramlFilePathWithOutFileName(ramlfilename.getAbsolutePath())+"\\jsd\\"+response.body().get(0).schema().value().toString()+".1.schema.json" ).toString());
 					jsonString2Map(response.body().get(0).example().value().toString(), ret1, null, "OUTPUT");
 					//configurationTO.setResponseSchemaString(JsonGeneratorFromSchema.generateInputSampleString(response.body().get(0).schemaContent()).toString());
 				} catch (Exception e) {

@@ -182,8 +182,9 @@ public static String ramlFilePathWithOutFileName(String ramlFileNamePath){
 		
 		//tokenizePathURLEndpoint.substring(tokenizePathURLEndpoint.indexOf(":", listofPositionsOfColon.get(1))+1);
 		//tokenizePathURLEndpoint = tokenizePathURLEndpoint.substring(tokenizePathURLEndpoint.indexOf("/"));
-		System.out.println("splitting of sprint starts "+ramlFileNamePath+"\n"+listofPositionsOfColon.get(1));
-        String ramlFilePath = ramlFileNamePath.substring(0, ramlFileNamePath.indexOf( listofPositionsOfColon.get(1))+1);
+		
+        String ramlFilePath = ramlFileNamePath.substring(0, listofPositionsOfColon.get(listofPositionsOfColon.size()-1));
+        System.out.println("splitting of sprint starts "+ramlFilePath);
 		return ramlFilePath;
 		
 	}
