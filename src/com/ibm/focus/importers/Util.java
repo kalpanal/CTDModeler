@@ -248,4 +248,8 @@ public static String ramlFilePathWithOutFileName(String ramlFileNamePath){
         }
         return array2List;      
     }
+	
+	public static boolean checkNumberOnly(String incomingStr){
+		return incomingStr.matches("[0-9]+");
+	}
 }
