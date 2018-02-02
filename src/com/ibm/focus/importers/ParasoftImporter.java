@@ -319,6 +319,7 @@ public class ParasoftImporter implements CartesianProductImporter {
 			
 			traceabilityIdSet.add("TC00"+k+"_traceabilityId");			
 		}
+		retValue.add(traceabilityIdSet);
 		
 		SortedSet<String> responseCodeSet = new TreeSet<String>();
 		responseCodeSet.add("200");
