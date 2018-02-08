@@ -136,7 +136,7 @@ public class ParasoftImporter implements CartesianProductImporter {
 			String generateModelForEndPointURL = null;
 			for(int k=0;k< listOfEndPoints.size();k++){
 				String endPointURL = listOfEndPoints.get(k);
-				//System.out.println("endPointURL----------------------->"+endPointURL+"----------"+lastUpdatedEndpoint);
+				System.out.println("endPointURL----------------------->"+endPointURL+"----------"+lastUpdatedEndpoint);
 				if(lastUpdatedEndpoint.equals("")){
 					generateModelForEndPointURL = listOfEndPoints.get(0);
 					break;
@@ -154,14 +154,18 @@ public class ParasoftImporter implements CartesianProductImporter {
 				}
 
 			}
+			
+			if(generateModelForEndPointURL == null){
+				generateModelForEndPointURL = listOfEndPoints.get(0);
+			}
 
-			//System.out.println("generateModelForEndPointURL=================>"+generateModelForEndPointURL);
+			System.out.println("generateModelForEndPointURL=================>"+generateModelForEndPointURL);
 			try{			
 				LOOP1:for(Resource urlEndPointsNode : api.resources()) {
 					AtomicInteger methodPosition = new AtomicInteger();
 					List<Method> methodTypes = urlEndPointsNode.methods();
 					LOOP2:for(Method methodName : methodTypes)  {	
-						//System.out.println(urlEndPointsNode.displayName()+"pick next value inside loop2"+pickNext.get());
+						System.out.println("pick next value inside loop2"+urlEndPointsNode.displayName()+";"+urlEndPointsNode.methods().get(methodPosition.get()).method());
 						ConfigurationTO configurationTO = null;
 						if((urlEndPointsNode.displayName()+";"+urlEndPointsNode.methods().get(methodPosition.get()).method()).equalsIgnoreCase(generateModelForEndPointURL)){
 							try {
