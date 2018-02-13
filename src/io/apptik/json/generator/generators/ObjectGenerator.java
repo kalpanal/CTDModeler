@@ -50,6 +50,7 @@ public class ObjectGenerator extends JsonGenerator {
             for(Map.Entry<String,Schema> propItem : props) {
                 if (!this.configuration.skipObjectProperties.contains(propItem.getKey())) {
                     Schema propertySchema = propItem.getValue();
+                     boolean putFlag= false;
                     for (Map.Entry<Matcher<Schema>, Class> entry : commonPropertyMatchers.entrySet()) {
                         if (entry.getKey().matches(propertySchema)) {
                             try {
@@ -58,6 +59,7 @@ public class ObjectGenerator extends JsonGenerator {
                                
                                 if (newEl != null) {
                                     res.put(propItem.getKey(), newEl);
+                                     putFlag = true;
                                     break;
                                 }
                             } catch (InstantiationException e) {
@@ -73,9 +75,54 @@ public class ObjectGenerator extends JsonGenerator {
                             }
                         }
                     }
+                    if(!putFlag){
+                    	res.put(propItem.getKey(), "uYYuuss");
+                    }
                 }
             }
         }
         return res;
     }
+    
+   /* public JsonObject generate() {
+        JsonObject res = new JsonObject();
+        SchemaMap props = schema.getProperties();
+        JsonElement  newEl;
+        
+        if(props!=null) {
+            for(Map.Entry<String,Schema> propItem : props) {
+                if (!this.configuration.skipObjectProperties.contains(propItem.getKey())) {
+                    Schema propertySchema = propItem.getValue();
+                    boolean putFlag= false;
+                    for (Map.Entry<Matcher<Schema>, Class> entry : commonPropertyMatchers.entrySet()) {
+                        if (entry.getKey().matches(propertySchema)) {
+                            try {
+                                JsonGenerator gen = (JsonGenerator) entry.getValue().getDeclaredConstructor(Schema.class, JsonGeneratorConfig.class, String.class).newInstance(propertySchema, configuration, propItem.getKey());
+                                newEl = gen.generate();
+                                if (newEl != null) {
+                                    res.put(propItem.getKey(), newEl);
+                                    putFlag = true;
+                                    break;
+                                }
+                            } catch (InstantiationException e) {
+                                e.printStackTrace();
+                            } catch (IllegalAccessException e) {
+                                e.printStackTrace();
+                            } catch (NoSuchMethodException e) {
+                                e.printStackTrace();
+                            } catch (InvocationTargetException e) {
+                                e.printStackTrace();
+                            } catch (JsonException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    if(!putFlag){
+                    	res.put(propItem.getKey(), "uYYuuss");
+                    }
+                }
+            }
+        }
+        return res;
+    }*/
 }

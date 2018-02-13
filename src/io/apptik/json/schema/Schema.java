@@ -12,7 +12,6 @@ import io.apptik.json.wrapper.JsonObjectWrapper;
 import io.apptik.json.wrapper.JsonStringArrayWrapper;
 import io.apptik.json.wrapper.MetaInfo;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -159,7 +158,6 @@ public abstract class Schema extends JsonObjectWrapper implements MetaInfo{
     @Override
     public <T extends JsonElementWrapper> T wrap(JsonObject jsonElement) {
         Schema schema = super.wrap(jsonElement);
-
         mergeWithRef();
         return (T) schema;
     }
@@ -186,7 +184,7 @@ public abstract class Schema extends JsonObjectWrapper implements MetaInfo{
                 vals.mergeAllRefs();
             }
         }
-        if(getAllOf()!=null) {
+        if(getAllOf()!=null) {        	
             for (Schema vals : getAllOf()) {
                 vals.mergeAllRefs();
             }
@@ -209,9 +207,7 @@ public abstract class Schema extends JsonObjectWrapper implements MetaInfo{
             //if there are title and description already do not change those.
             Schema refSchema;
             if(schemaFetcher==null) schemaFetcher = new SchemaUriFetcher();
-            
             refSchema = schemaFetcher.fetch(URI.create(this.getRef()), origSrc, URI.create(getId()));
-            System.out.println("kalpanannnnnnnnnnnnn refSchema"+refSchema);
 
             //TODO not really according to the specs, however specs not really clear what "$ref should precede all other..." means
             if (refSchema!=null) {
@@ -399,7 +395,7 @@ public abstract class Schema extends JsonObjectWrapper implements MetaInfo{
 
     //TODO will not pass memebers. use smth similar to SchemaMap
     public SchemaList getAllOf() {
-        if(!getJson().has("allOf")) return null;
+        if(!getJson().toString().contains("allOf")) return null;
         return new SchemaList(getEmptySchema("allOf")).wrap(getJson().optJsonArray("allOf"));
     }
 
