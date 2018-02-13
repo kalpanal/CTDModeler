@@ -184,7 +184,7 @@ public abstract class Schema extends JsonObjectWrapper implements MetaInfo{
                 vals.mergeAllRefs();
             }
         }
-        if(getAllOf()!=null) {
+        if(getAllOf()!=null) {        	
             for (Schema vals : getAllOf()) {
                 vals.mergeAllRefs();
             }
@@ -395,7 +395,7 @@ public abstract class Schema extends JsonObjectWrapper implements MetaInfo{
 
     //TODO will not pass memebers. use smth similar to SchemaMap
     public SchemaList getAllOf() {
-        if(!getJson().has("allOf")) return null;
+        if(!getJson().toString().contains("allOf")) return null;
         return new SchemaList(getEmptySchema("allOf")).wrap(getJson().optJsonArray("allOf"));
     }
 
