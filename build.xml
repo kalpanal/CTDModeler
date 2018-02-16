@@ -21,7 +21,7 @@
 		<copy todir="build/classes">
 		<fileset dir="src" includes="**/*.properties"/>
 		</copy>
-		<jar basedir="build/classes" destfile="C:\Focus tool\FOCUS-2.15.0.1\lib\importers-custom.jar">
+		<jar basedir="build/classes" destfile="C:\Focus tool\FOCUS-2.16.0.1\lib\importers-custom.jar">
 			<manifest>
 				<attribute name="Built-By" value="${builder}" />
 				<attribute name="Built-On" value="${build-info.current-date}" />

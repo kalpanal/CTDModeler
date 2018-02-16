@@ -14,9 +14,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.jdom2.Element;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.raml.v2.api.RamlModelBuilder;
@@ -42,6 +44,7 @@ public class ParasoftImporter implements CartesianProductImporter {
 
 	ArrayList<AttributeData> ret = new ArrayList<AttributeData>();
 	ArrayList<AttributeData> ret1 = new ArrayList<AttributeData>();
+	HashSet<String> uniqueAttributesOutput =  new HashSet<String>();
 	ArrayList<String> retValues = new ArrayList<String>();
 	File ramlfilename=null;
 	File configFile = null;
@@ -100,7 +103,7 @@ public class ParasoftImporter implements CartesianProductImporter {
 			}
 			try{
 			System.out.println("lastUpdatedEndpoint"+ramlfilename);
-			System.out.println("ramlfilename"+api);
+			//System.out.println("ramlfilename"+api);
 			}catch(Exception ec){
 				System.out.println(ec.getMessage());
 			}
@@ -136,7 +139,7 @@ public class ParasoftImporter implements CartesianProductImporter {
 			String generateModelForEndPointURL = null;
 			for(int k=0;k< listOfEndPoints.size();k++){
 				String endPointURL = listOfEndPoints.get(k);
-				System.out.println("endPointURL----------------------->"+endPointURL+"----------"+lastUpdatedEndpoint);
+				//System.out.println("endPointURL----------------------->"+endPointURL+"----------"+lastUpdatedEndpoint);
 				if(lastUpdatedEndpoint.equals("")){
 					generateModelForEndPointURL = listOfEndPoints.get(0);
 					break;
@@ -159,13 +162,13 @@ public class ParasoftImporter implements CartesianProductImporter {
 				generateModelForEndPointURL = listOfEndPoints.get(0);
 			}
 
-			System.out.println("generateModelForEndPointURL=================>"+generateModelForEndPointURL);
+			//System.out.println("generateModelForEndPointURL=================>"+generateModelForEndPointURL);
 			try{			
 				LOOP1:for(Resource urlEndPointsNode : api.resources()) {
 					AtomicInteger methodPosition = new AtomicInteger();
 					List<Method> methodTypes = urlEndPointsNode.methods();
 					LOOP2:for(Method methodName : methodTypes)  {	
-						System.out.println("pick next value inside loop2"+urlEndPointsNode.displayName()+";"+urlEndPointsNode.methods().get(methodPosition.get()).method());
+						//System.out.println("pick next value inside loop2"+urlEndPointsNode.displayName()+";"+urlEndPointsNode.methods().get(methodPosition.get()).method());
 						ConfigurationTO configurationTO = null;
 						if((urlEndPointsNode.displayName()+";"+urlEndPointsNode.methods().get(methodPosition.get()).method()).equalsIgnoreCase(generateModelForEndPointURL)){
 							try {
@@ -230,7 +233,7 @@ public class ParasoftImporter implements CartesianProductImporter {
 					AttributeData.IOType.INPUT);
 			ret.add(responseCode);
 
-			System.out.println("configurationTOEndPointList should be one always------>"+configurationTOEndPointList.size());
+			//System.out.println("configurationTOEndPointList should be one always------>"+configurationTOEndPointList.size());
 			if(configurationTOEndPointList.size() > 0) {
 				for(ConfigurationTO configurationTO : configurationTOEndPointList){
 					//System.out.println("configurationTO.getQueryParameters()======================>"+configurationTO.getQueryParameters().size());
@@ -249,7 +252,7 @@ public class ParasoftImporter implements CartesianProductImporter {
 					/*if(configurationTO.getResponseSchemaString() != null){
 						jsonString2Map(configurationTO.getResponseSchemaString(), ret, null, "OUTPUT");
 					}*/
-					configurationTO.getResponseSchemaMap().entrySet().forEach(responseMap -> {
+					/*configurationTO.getResponseSchemaMap().entrySet().forEach(responseMap -> {
 						
 						if((!responseMap.getValue().equals("")) && responseMap.getValue()!=null){
 							try {
@@ -260,8 +263,19 @@ public class ParasoftImporter implements CartesianProductImporter {
 							}
 						}
 					}
-				);
+				);*/
+					
+					HashMap<String, String> responseMap = configurationTO.getResponseSchemaMap();
+					for (Entry<String, String> entry : responseMap.entrySet()) {
+						//String responseCode = entry.getKey();
+						String reponseSchemaContent = entry.getValue();						
+						//Just run assertions tag creation just once not as many as response code in responseMap
+						if(reponseSchemaContent!= null && (!reponseSchemaContent.equals("")) ){
+							jsonString2Map(reponseSchemaContent, ret, null, "OUTPUT");
+							System.out.println("ret-------->"+ret.size());
+						}
 
+					}
 
 				}
 			}
@@ -401,7 +415,7 @@ public class ParasoftImporter implements CartesianProductImporter {
 
 
 
-	public Map<String, Object> jsonString2Map(String jsonString, ArrayList<AttributeData> ret,String prependKey, String ioType) throws JSONException, IOException {
+	public ArrayList<AttributeData> jsonString2Map(String jsonString, ArrayList<AttributeData> ret,String prependKey, String ioType) throws JSONException, IOException {
 		LinkedHashMap<String, Object> keys = new LinkedHashMap<String, Object>();
 
 		JSONObject json = new JSONObject();
@@ -442,20 +456,33 @@ public class ParasoftImporter implements CartesianProductImporter {
 				if(ioType.equals("INPUT")){
 					a1 = new AttributeData( actualKey+"", AttributeData.Type.STRING,
 							AttributeData.IOType.INPUT);
+					ret.add(a1);
+					retValues.add(value+"");
 					
 					
 				}else {
-					a1 = new AttributeData( actualKey+"", AttributeData.Type.STRING,
-							AttributeData.IOType.OUTPUT);
+					if(uniqueAttributesOutput != null){
+						if(!uniqueAttributesOutput.contains(actualKey)){							
+							uniqueAttributesOutput.add(actualKey);
+							a1 = new AttributeData( actualKey+"", AttributeData.Type.STRING,
+									AttributeData.IOType.OUTPUT);
+							System.out.println("actualKeyactualKeyactualKeyactualKey"+actualKey+"///"+ioType+"//"+ret.size());
+							ret.add(a1);
+							retValues.add(value+"");
+						}
+					}else{
+						a1 = new AttributeData( actualKey+"", AttributeData.Type.STRING,
+								AttributeData.IOType.OUTPUT);
+						ret.add(a1);
+						retValues.add(value+"");
+						
+					}
 				}
-
-				//System.out.println("retretretretretretret===>"+ret);
-				ret.add(a1);
-				retValues.add(value+"");
+				//System.out.println("retretretretretretret===>"+actualKey+"\n");				
 				keys.put( key, value );
 			}
 		}
-		return keys;
+		return ret;
 	}
 
 	public List<Object> jsonArray2List(String arrayOFKeys, ArrayList<AttributeData> ret, String actualKey, String ioType) throws JSONException,
@@ -489,7 +516,7 @@ public class ParasoftImporter implements CartesianProductImporter {
 				objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 				String mapToJson = objectMapper.writeValueAsString(arrayOFKeysList.get(i));
 				//System.out.println(mapToJson);
-				Map<String, Object> subObj2Map = jsonString2Map( mapToJson, ret, actualKey, ioType);
+				ArrayList<AttributeData> subObj2Map = jsonString2Map( mapToJson, ret, actualKey, ioType);
 				array2List.add(subObj2Map);
 			} else if (arrayOFKeysList.get(i) instanceof ArrayList) {
 
@@ -528,8 +555,8 @@ public class ParasoftImporter implements CartesianProductImporter {
 							+urlEndPointsSubNode.methods().get(index).body().get(0).schema().value().toString()+".1.schema.json" ).toString());
 			/*System.out.println("output samples"+urlEndPointsSubNode
 					.methods().get(index).body().get(0).example().value().toString());*/
-			jsonString2Map(urlEndPointsSubNode
-					.methods().get(index).body().get(0).example().value().toString(), ret1, null, "INPUT");
+			/*jsonString2Map(urlEndPointsSubNode
+					.methods().get(index).body().get(0).example().value().toString(), ret1, null, "INPUT");*/
 
 		}
 		
@@ -542,20 +569,20 @@ public class ParasoftImporter implements CartesianProductImporter {
 		//System.out.println("res1.size()"+res1.size());
 		
 		boolean responseLoaded = false;
-		for(int k=0; k<2; k++){
+		for(int k=0; k<res1.size(); k++){
 			//response.get(i);
 			Response response = res1.get(k);
 			//System.out.println("response.body() "+response.body() );
 			if(response.body() != null && (!response.body().isEmpty())){
-				if( (response.body().get(0).schemaContent() != null) && (!responseLoaded)){
+				if( (response.body().get(0).schemaContent() != null) ){
 				//System.out.println(response.body().get(0).schemaContent());
 				try {
 					//System.out.println(response.body().get(0).schemaContent().toString());
 					//configurationTO.setResponseSchemaString(JsonGeneratorFromSchema.generateInputSampleString(response.body().get(k).schemaContent().toString()).toString());
-					responseLoaded = true;
+					//responseLoaded = true;
 					responseSchemaMap.put(response.code().value(), JsonGeneratorFromSchema.generateInputSampleString(response.body().get(0).schemaContent().toString(), 
 							Util.ramlFilePathWithOutFileName(ramlfilename.getAbsolutePath())+"\\jsd\\"+response.body().get(0).schema().value().toString()+".1.schema.json" ).toString());
-					jsonString2Map(response.body().get(0).example().value().toString(), ret1, null, "OUTPUT");
+					//jsonString2Map(response.body().get(0).example().value().toString(), ret1, null, "OUTPUT");
 					//configurationTO.setResponseSchemaString(JsonGeneratorFromSchema.generateInputSampleString(response.body().get(0).schemaContent()).toString());
 				} catch (Exception e) {
 					System.out.println("Error while reading response body schema content"+e.getMessage());
@@ -568,6 +595,8 @@ public class ParasoftImporter implements CartesianProductImporter {
 			}
 
 		}
+		/*responseSchemaMap = (HashMap<String, String>) createMap(responseSchemaMap);
+		System.out.println("responseSchemaMap->"+responseSchemaMap);*/
 		configurationTO.setResponseSchemaMap(responseSchemaMap);
 		/** load output parameters -END*/
 		
