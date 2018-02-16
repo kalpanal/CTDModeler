@@ -170,7 +170,7 @@ public class Util {
 		
 		//tokenizePathURLEndpoint.substring(tokenizePathURLEndpoint.indexOf(":", listofPositionsOfColon.get(1))+1);
 		//tokenizePathURLEndpoint = tokenizePathURLEndpoint.substring(tokenizePathURLEndpoint.indexOf("/"));
-		System.out.println("splitting of sprint starts \n");
+		//System.out.println("splitting of sprint starts \n");
         String[] urlPathTokens = tokenizePathURLEndpoint.substring(tokenizePathURLEndpoint.indexOf("/", listofPositionsOfColon.get(1))+1).split("/");
 		return urlPathTokens;
 		
@@ -184,7 +184,7 @@ public static String ramlFilePathWithOutFileName(String ramlFileNamePath){
 		//tokenizePathURLEndpoint = tokenizePathURLEndpoint.substring(tokenizePathURLEndpoint.indexOf("/"));
 		
         String ramlFilePath = ramlFileNamePath.substring(0, listofPositionsOfColon.get(listofPositionsOfColon.size()-1));
-        System.out.println("splitting of sprint starts "+ramlFilePath);
+       // System.out.println("splitting of sprint starts "+ramlFilePath);
 		return ramlFilePath;
 		
 	}

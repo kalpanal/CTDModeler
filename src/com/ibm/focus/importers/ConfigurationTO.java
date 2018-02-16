@@ -32,11 +32,11 @@ public class ConfigurationTO {
 	public void setInputSampleString(String inputSampleString) {
 		this.inputSampleString = inputSampleString;
 	}
-	public ArrayList getUrlParametersList() {
+	public List<Parameter> getUrlParametersList() {
 		return urlParametersList;
 	}
-	public void setUrlParametersList(ArrayList urlParametersList) {
-		this.urlParametersList = urlParametersList;
+	public void setUrlParametersList(List<Parameter> objects) {
+		this.urlParametersList = objects;
 	}
 	public String method;
 	public HashMap<String, String> responseSchemaMap;
@@ -44,7 +44,7 @@ public class ConfigurationTO {
 	public String endPointUrl;
 	public ArrayList headersList;
 	public String inputSampleString;
-	public ArrayList urlParametersList;
+	public List<Parameter> urlParametersList;
 	public String securedBy;
 	public String schemaContentInputParam;
 	List<String> dataSource;

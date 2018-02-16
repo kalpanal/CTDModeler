@@ -174,6 +174,9 @@ public class ParasoftImporter implements CartesianProductImporter {
 							try {
 								configurationTO = copyRAMLDataToDTO(urlEndPointsNode, methodPosition.get());
 								configurationTO.setQueryParameters(urlEndPointsNode.methods().get(methodPosition.get()).queryParameters());
+								configurationTO.setQueryParameters(urlEndPointsNode.uriParameters());
+								/*System.out.println("Hello"+urlEndPointsNode.methods().get(methodPosition.get()).headers().toString());
+								System.out.println("Hello"+(urlEndPointsNode.methods().get(methodPosition.get()).queryParameters()));*/
 								configurationTOEndPointList.add(configurationTO);
 								Util.updateProperties(generateModelForEndPointURL); 
 							} catch (Exception e) {
@@ -185,7 +188,8 @@ public class ParasoftImporter implements CartesianProductImporter {
 					// if(urlEndPointsNode.resources().size() > 0){
 					int lastElementOfLoopSubresource = 0;
 					LOOP3:for(Resource urlEndPointsSubNode : urlEndPointsNode.resources()){		
-						//System.out.println(urlEndPointsNode.displayName()+urlEndPointsSubNode.displayName());
+						System.out.println(urlEndPointsSubNode.uriParameters());
+						
 						AtomicInteger methodPosition1 = new AtomicInteger();
 						List<Method> methodTypes1 = urlEndPointsSubNode.methods();
 						LOOP4:for(Method methodName : methodTypes1)  {
@@ -195,6 +199,10 @@ public class ParasoftImporter implements CartesianProductImporter {
 								try {
 									configurationTOSubNode = copyRAMLDataToDTO(urlEndPointsSubNode,methodPosition1.get());
 									configurationTOSubNode.setQueryParameters(urlEndPointsSubNode.methods().get(methodPosition1.get()).queryParameters());
+									configurationTOSubNode.setUrlParametersList(urlEndPointsSubNode.uriParameters());
+									/*System.out.println("Hello"+urlEndPointsSubNode.methods().get(methodPosition1.get()).headers().get(0).displayName());
+									System.out.println("Hello"+urlEndPointsSubNode.methods().get(methodPosition1.get()).headers().get(1).displayName());
+									System.out.println("Hello"+(urlEndPointsSubNode.methods().get(methodPosition1.get()).queryParameters()));*/
 									//System.out.println("inside loop 4+++++++++++++++++++++++++"+urlEndPointsSubNode.methods().get(methodPosition1.get()).body().get(0).schema().value().toString());
 									
 									configurationTOEndPointList.add(configurationTOSubNode);
@@ -230,7 +238,7 @@ public class ParasoftImporter implements CartesianProductImporter {
 					AttributeData.IOType.INPUT);
 			ret.add(traceabilityId);
 			AttributeData responseCode = new AttributeData("responseCode", AttributeData.Type.STRING,
-					AttributeData.IOType.INPUT);
+					AttributeData.IOType.OUTPUT);
 			ret.add(responseCode);
 
 			//System.out.println("configurationTOEndPointList should be one always------>"+configurationTOEndPointList.size());
@@ -239,6 +247,16 @@ public class ParasoftImporter implements CartesianProductImporter {
 					//System.out.println("configurationTO.getQueryParameters()======================>"+configurationTO.getQueryParameters().size());
 					if(configurationTO.getInputSampleString() != null){
 						jsonString2Map(configurationTO.getInputSampleString(), ret, null, "INPUT");
+					}
+					for(Parameter param1:configurationTO.getUrlParametersList()){
+						//System.out.println("kalpana-----"+param1.displayName());
+						ret.add(new AttributeData(param1.displayName(), AttributeData.Type.STRING,
+									AttributeData.IOType.INPUT));
+						if(param1.example() != null){retValues.add(param1.example().toString());}
+						else{
+							retValues.add("Enter value");
+						}
+						
 					}
 					for(Parameter param1:configurationTO.getQueryParameters()){
 						ret.add(new AttributeData(param1.displayName().toString(), AttributeData.Type.STRING,
@@ -249,6 +267,9 @@ public class ParasoftImporter implements CartesianProductImporter {
 						}
 						
 					}
+					
+					
+					
 					/*if(configurationTO.getResponseSchemaString() != null){
 						jsonString2Map(configurationTO.getResponseSchemaString(), ret, null, "OUTPUT");
 					}*/
