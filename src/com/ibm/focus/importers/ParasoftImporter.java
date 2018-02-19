@@ -248,15 +248,17 @@ public class ParasoftImporter implements CartesianProductImporter {
 					if(configurationTO.getInputSampleString() != null){
 						jsonString2Map(configurationTO.getInputSampleString(), ret, null, "INPUT");
 					}
-					for(Parameter param1:configurationTO.getUrlParametersList()){
-						//System.out.println("kalpana-----"+param1.displayName());
-						ret.add(new AttributeData(param1.displayName(), AttributeData.Type.STRING,
-									AttributeData.IOType.INPUT));
-						if(param1.example() != null){retValues.add(param1.example().toString());}
-						else{
-							retValues.add("Enter value");
+					if(configurationTO.getUrlParametersList() != null){
+						for(Parameter param1:configurationTO.getUrlParametersList()){
+							//System.out.println("kalpana-----"+param1.displayName());
+							ret.add(new AttributeData(param1.displayName(), AttributeData.Type.STRING,
+										AttributeData.IOType.INPUT));
+							if(param1.example() != null){retValues.add(param1.example().toString());}
+							else{
+								retValues.add("Enter value");
+							}
+							
 						}
-						
 					}
 					for(Parameter param1:configurationTO.getQueryParameters()){
 						ret.add(new AttributeData(param1.displayName().toString(), AttributeData.Type.STRING,
