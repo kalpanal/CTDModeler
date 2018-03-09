@@ -174,7 +174,7 @@ public class ParasoftImporter implements CartesianProductImporter {
 							try {
 								configurationTO = copyRAMLDataToDTO(urlEndPointsNode, methodPosition.get());
 								configurationTO.setQueryParameters(urlEndPointsNode.methods().get(methodPosition.get()).queryParameters());
-								configurationTO.setQueryParameters(urlEndPointsNode.uriParameters());
+								configurationTO.setUrlParametersList(urlEndPointsNode.uriParameters());
 								/*System.out.println("Hello"+urlEndPointsNode.methods().get(methodPosition.get()).headers().toString());
 								System.out.println("Hello"+(urlEndPointsNode.methods().get(methodPosition.get()).queryParameters()));*/
 								configurationTOEndPointList.add(configurationTO);
@@ -244,7 +244,7 @@ public class ParasoftImporter implements CartesianProductImporter {
 			//System.out.println("configurationTOEndPointList should be one always------>"+configurationTOEndPointList.size());
 			if(configurationTOEndPointList.size() > 0) {
 				for(ConfigurationTO configurationTO : configurationTOEndPointList){
-					//System.out.println("configurationTO.getQueryParameters()======================>"+configurationTO.getQueryParameters().size());
+					System.out.println("configurationTO.getQueryParameters()======================>"+configurationTO.getQueryParameters().size());
 					if(configurationTO.getInputSampleString() != null){
 						jsonString2Map(configurationTO.getInputSampleString(), ret, null, "INPUT");
 					}
